@@ -1,0 +1,31 @@
+html {
+    font-family: sans-serif;
+}
+
+body {
+    margin: 0 auto;
+    max-width: 800px;
+    background: #eaffd0;
+}
+
+header,footer {
+   
+    background-color: #95e1d3;
+    padding: 20px;
+    color: black
+}
+
+main {
+    padding: 20px;
+    height: 200px;
+    padding-bottom: 25px;
+    background: #ddd;
+}
+
+main p {
+    font-family: 'Cookie', cursive;
+    font-size: 25px;
+    width: 270px;    
+    margin-left: 200px;
+    text-align: center;
+}
