@@ -1,5 +1,10 @@
-# Random_JavaScript_practice_project
+# Project Auto-README
 
-## Auto Generated README
+## Project Structure
 
-Last updated: Fri Feb 20 10:20:23 UTC 2026
+### .
+- generate_readme.py
+- index.html
+- script.js
+- style.css
+
