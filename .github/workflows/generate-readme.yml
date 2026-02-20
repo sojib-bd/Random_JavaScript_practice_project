@@ -1,5 +1,6 @@
-name: Generate README
+name: Auto-generate README
 
+# Trigger workflow on push to any branch and manual trigger
 on:
   push:
     branches:
@@ -7,25 +8,59 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  generate:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      # 1️⃣ Checkout the repository
+      - name: Checkout repo
         uses: actions/checkout@v4
 
+      # 2️⃣ Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # 3️⃣ Install any Python dependencies (if needed)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      # 4️⃣ Generate README from project files
       - name: Generate README
         run: |
-          echo "# $(basename $GITHUB_REPOSITORY)" > README.md
-          echo "" >> README.md
-          echo "## Auto Generated README" >> README.md
-          echo "" >> README.md
-          echo "Last updated: $(date)" >> README.md
+          cat << 'EOF' > generate_readme.py
+          import os
 
-      - name: Commit changes
+          def scan_files():
+              readme_content = "# Project Auto-README\n\n"
+              readme_content += "## Project Structure\n\n"
+              for root, dirs, files in os.walk("."):
+                  # Ignore .git and workflow files
+                  if ".git" in root or ".github" in root:
+                      continue
+                  files = [f for f in files if f.endswith((".js", ".html", ".css", ".py"))]
+                  if files:
+                      readme_content += f"### {root}\n"
+                      for file in files:
+                          readme_content += f"- {file}\n"
+                      readme_content += "\n"
+              return readme_content
+
+          if __name__ == "__main__":
+              content = scan_files()
+              with open("README.md", "w") as f:
+                  f.write(content)
+          EOF
+
+          python generate_readme.py
+
+      # 5️⃣ Commit and push README.md
+      - name: Commit README
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "actions@github.com"
           git add README.md
-          git commit -m "Auto-generate README" || echo "No changes"
+          git commit -m "Auto-generate README from project files" || echo "No changes"
           git push
